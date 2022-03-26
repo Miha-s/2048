@@ -9,9 +9,12 @@
 
 
 using Pair = std::pair<int, int>;
+enum class direction : char;
 
 // Pair.first  - x
 // Pair.second - y
+
+
 
 class Field {
     Pair size;
@@ -19,5 +22,8 @@ class Field {
     std::vector<std::unique_ptr<Cell>> cells;
 public:
     Field(Pair s, int spacing);
+    void move(direction dir);
+    
+    ~Field();
 };
 
