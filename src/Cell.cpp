@@ -5,22 +5,31 @@ Cell::Cell(Pair pos_, Pair size_) : value(0),
         box(new Fl_Box(pos_.first, pos_.second, size_.first, size_.second, "0"))
 {}
 
+void Cell::val(int value_)
+{
+    value = value_;
+    init_value();
+}
 
-// to do correct
+void Cell::init_value()
+{
+    sprintf(strval, "%d", value);
+    box->label(strval);
+}
+
 void Cell::move_to(Cell &c)
 {   
     std::swap(value, c.value);
-    int x = box->x();
-    int y = box->y();
-    box->position(c.box->x(), c.box->y());
-    c.box->position(x, y);
+    init_value();
+    c.init_value();
 }
 
-// to do correct
 void Cell::combine_with(Cell &c)
 {
-    value *= c.value;
+    value += c.value;
     c.value = 0;
+    init_value();
+    c.init_value();
 }
 
 Cell::~Cell() {}

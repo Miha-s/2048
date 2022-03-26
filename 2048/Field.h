@@ -19,7 +19,6 @@ class Field {
     Pair size;
     std::shared_ptr<Fl_Window> win;
     std::vector<std::shared_ptr<Cell>> cells;
-
 public:
     Field(Pair s, Pair bs, int spacing);
     void move(direction dir);
@@ -27,10 +26,11 @@ public:
     
     ~Field();
 private:
+    void generate_num();
     inline int pos(int i, int j) { return i*size.first + j; }
     inline void comb(int i, int j, std::shared_ptr<Cell> tmp);
+    inline int move(int i, int j, std::shared_ptr<Cell> tmp);
     void combine(direction dir);
-    void generate_num();
-    void move(int i, int j);
+    void move_(direction dir);
 };
 
