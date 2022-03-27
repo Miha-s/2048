@@ -8,18 +8,19 @@ Field::Field(Pair s, Pair bs, int spacing) : size(s)
     int size_y = size.second * bs.second + (size.second + 1) * spacing;
 
     win.reset(new Fl_Window(size_x, size_y, "2048"));
-
+    win->begin();
+    
     int tmp_y = spacing;
     for(int i = 0; i < size.second; i++) {
         int tmp_x = spacing;
         for(int j = 0; j < size.first; j++) {
-            std::shared_ptr<Cell> p (new Cell(Pair(tmp_x, tmp_y), 
-                                        Pair(bs.first, bs.second)));
+            std::shared_ptr<Cell> p (new Cell(Pair(tmp_x, tmp_y), bs));
             cells.push_back(p);
             tmp_x += spacing + bs.first;
         }
         tmp_y += spacing + bs.second;
     }
+    win->end();
     generate_num();
 }
 
@@ -156,3 +157,4 @@ void Field::move(direction dir)
     generate_num();
 }
 
+Field::~Field() {}

@@ -6,10 +6,8 @@
 #include <FL/Fl_Group.H>
 #include <vector>
 #include "Cell.h"
+#include "enumeration.h"
 
-
-using Pair = std::pair<int, int>;
-enum class direction : char;
 // Pair.first  - x
 // Pair.second - y
 

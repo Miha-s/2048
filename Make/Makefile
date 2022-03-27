@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -g -Wall
 LIBS = -lfltk
-FILES = Field
+FILES = Field Cell Window
 HEAD_DIR = ../2048/
 OBJS = $(patsubst %, %.o, $(FILES))
 SRC_DIR  = ../src/
@@ -14,4 +14,4 @@ SRC_DIR  = ../src/
 Field.o: Cell.o
 
 game: $(HEAD_DIR)game.cpp $(OBJS)
-	$(CXX) $(CXXFLAGS) $(LIBS) $< -o $@
+	$(CXX) $(CXXFLAGS) $< $(OBJS) $(LIBS) -o $@
