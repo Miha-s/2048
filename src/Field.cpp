@@ -1,7 +1,8 @@
 #include "../2048/Field.h"
 
-Field::Field(Pair s, Pair bs, int spacing, Fl_Window* win) : size(s)
+Field::Field(Pair s, Pair bs, int spacing, Fl_Window* win_) : size(s)
 {
+    win = win_;
     int size_x = size.first * bs.first + (size.first + 1) * spacing;
     int size_y = size.second * bs.second + (size.second + 1) * spacing;
     win->size(size_x, size_y);
@@ -24,6 +25,19 @@ Field::Field(Pair s, Pair bs, int spacing, Fl_Window* win) : size(s)
 
 void Field::generate_num()
 {
+    bool lose = true;
+    for(int i = 0; i < size.first * size.second; i++) {
+        if(cells[i]->val() == 2048) {
+            gover_callback(0, data);
+            return;
+        } else if (cells[i]->val() == 0) {
+            lose = false;
+        }
+    }
+    if(lose) {
+        gover_callback(1, data);
+        return;
+    }
     while(true) {
         int r = rand()%(size.first*size.second);
         if(cells[r]->val() == 0) {
@@ -158,6 +172,20 @@ void Field::step(direction dir)
 {
     combine(dir);
     move_(dir);
+    generate_num();
+}
+
+void Field::callback(gover_t go, void* data_)
+{
+    gover_callback = go;
+    data = data_;
+}
+
+void Field::reset()
+{
+    for(auto cell : cells) {
+        cell->val(0);
+    }
     generate_num();
 }
 
