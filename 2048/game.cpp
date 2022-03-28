@@ -9,12 +9,12 @@ void test(direction)
 int main()
 {
     Pair size(5, 5);
-    Pair but_size(200, 50);
-    Field field(size, but_size, 20);
-    Window *win = new Window(400, 400, "win", test);
-//    std::shared_ptr<Fl_Window> win = field.window();
+    Pair but_size(70, 30);
+    Window *win = new Window("2048");
+    Field field(size, but_size, 20, win);
+    win->field(&field);
     
     win->show();
-//    win->show();
+
     return Fl::run();
 }

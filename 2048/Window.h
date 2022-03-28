@@ -1,14 +1,17 @@
+#ifndef WINDOW_H
+#define WINDOW_H
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <iostream>
+#include "Field.h"
 #include "enumeration.h"
 
-
 class Window : public Fl_Window {
-    typedef void (*call)(direction);
-    call c;
+    Field* f;
 public:
-    Window(int x, int y, const char *name, call c_);
+    Window(const char *name) : Fl_Window(0, 0, name) {}
+    void field(Field *f_) { f = f_;}
 
     virtual int handle(int e);
 };
+#endif //WINDOW_H
