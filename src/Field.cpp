@@ -6,6 +6,7 @@ Field::Field(Pair s, Pair bs, int spacing, Fl_Window* win) : size(s)
     int size_y = size.second * bs.second + (size.second + 1) * spacing;
     win->size(size_x, size_y);
     win->begin();
+    win->color(fl_rgb_color(183,206,228));
     
     int tmp_y = spacing;
     for(int i = 0; i < size.second; i++) {
