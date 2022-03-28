@@ -3,7 +3,9 @@
 
 Cell::Cell(Pair pos_, Pair size_) : value(0), 
         box(new Fl_Box(pos_.first, pos_.second, size_.first, size_.second, "0"))
-{}
+{
+    box->labelsize(24);
+}
 
 void Cell::val(int value_)
 {

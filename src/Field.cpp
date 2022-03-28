@@ -1,25 +1,23 @@
 #include "../2048/Field.h"
 
-enum class direction : char { up, down, left, right };
-
-Field::Field(Pair s, Pair bs, int spacing) : size(s)
+Field::Field(Pair s, Pair bs, int spacing, Fl_Window* win) : size(s)
 {
     int size_x = size.first * bs.first + (size.first + 1) * spacing;
     int size_y = size.second * bs.second + (size.second + 1) * spacing;
-
-    win.reset(new Fl_Window(size_x, size_y, "2048"));
-
+    win->size(size_x, size_y);
+    win->begin();
+    
     int tmp_y = spacing;
     for(int i = 0; i < size.second; i++) {
         int tmp_x = spacing;
         for(int j = 0; j < size.first; j++) {
-            std::shared_ptr<Cell> p (new Cell(Pair(tmp_x, tmp_y), 
-                                        Pair(bs.first, bs.second)));
+            std::shared_ptr<Cell> p (new Cell(Pair(tmp_x, tmp_y), bs));
             cells.push_back(p);
             tmp_x += spacing + bs.first;
         }
         tmp_y += spacing + bs.second;
     }
+    win->end();
     generate_num();
 }
 
@@ -34,12 +32,19 @@ void Field::generate_num()
     }
 }
 
-inline void Field::comb(int i, int j, std::shared_ptr<Cell> tmp)
+inline void Field::comb(int i, int j, std::shared_ptr<Cell> &tmp)
 {
     std::shared_ptr<Cell> p = cells[pos(i, j)];
-    if(tmp->val() && p->val() == tmp->val()) 
-    tmp->combine_with(*p);
-    tmp = p;
+    if(!tmp->val()) {
+        tmp = p;
+        return ;
+    }
+    if(p->val()) {
+        if(p->val() == tmp->val()) {
+            tmp->combine_with(*p);
+        }
+        tmp = p;
+    }
 }
 
 void Field::combine(direction dir)
@@ -53,14 +58,14 @@ void Field::combine(direction dir)
     case direction::left:
         for(; i < size.second; i++) {
             tmp = cells[pos(i, 0)];
-            for(j++; j < size.first - 1; j++) 
+            for(j = 1; j < size.first; j++) 
                 comb(i, j, tmp);
         }
         break;
     case direction::up:
         for(; j < size.first; j++) {
             tmp = cells[pos(0, j)];
-            for(i++; i < size.second - 1; i++) 
+            for(i = 1; i < size.second; i++) 
                 comb(i, j, tmp);
         }
         break;
@@ -81,16 +86,15 @@ void Field::combine(direction dir)
     }
 }
 
-int Field::move(int i, int j, std::shared_ptr<Cell> tmp)
+int Field::move(int i, int j, std::shared_ptr<Cell> &tmp)
 {
     if(tmp->val())
         return 1;
     std::shared_ptr<Cell> p = cells[pos(i, j)];
-    if(!tmp->val() && p->val()) {
+    if(p->val()) {
         p->move_to(*tmp);
         return 1;
     }
-    tmp = p;
     return 0;
 }
 
@@ -106,7 +110,7 @@ void Field::move_(direction dir)
     switch(dir) {
     case direction::left:
         for(; i < size.second; i++) {
-            for(; j < size.first-1; j++) {
+            for(j = 0; j < size.first-1; j++) {
                 tmp = cells[pos(i, j)];
                 for(k = j+1; k < size.first; k++) 
                     if(move(i, k, tmp))
@@ -114,9 +118,9 @@ void Field::move_(direction dir)
             }
         }
         break;
-    case direction::down:
+    case direction::up:
         for(; j < size.first; j++) {
-            for(; i < size.second-1; i++) {
+            for(i = 0; i < size.second-1; i++) {
                 tmp = cells[pos(i, j)];
                 for(k = i+1; k < size.second; k++) 
                     if(move(k, j, tmp))
@@ -134,7 +138,7 @@ void Field::move_(direction dir)
             }
         }
         break;
-    case direction::up:
+    case direction::down:
         for(; j < size.first; j++) {
             for(i = size.second-1; i > 0; i--) {
                 tmp = cells[pos(i, j)];
@@ -149,10 +153,11 @@ void Field::move_(direction dir)
 }
 
 
-void Field::move(direction dir) 
+void Field::step(direction dir) 
 {
     combine(dir);
     move_(dir);
     generate_num();
 }
 
+Field::~Field() {}
