@@ -18,18 +18,27 @@
 class Field {
     Pair size;
     std::vector<std::shared_ptr<Cell>> cells;
+    Fl_Window* win;
+
+    typedef void (*gover_t)(int, void*);
+    gover_t gover_callback;
+    void* data;
 public:
-    Field(Pair s, Pair bs, int spacing, Fl_Window* win);
+    Field(Pair s, Pair bs, int spacing, Fl_Window* win_);
     void step(direction dir);
+    void callback(gover_t go, void* data);
+    Fl_Window* window() { return win; }
+    void reset();
     
     ~Field();
 private:
     void generate_num();
     inline int pos(int i, int j) { return i*size.first + j; }
-    inline void comb(int i, int j, std::shared_ptr<Cell> &tmp);
+    inline int comb(int i, int j, std::shared_ptr<Cell> &tmp);
     inline int move(int i, int j, std::shared_ptr<Cell> &tmp);
-    void combine(direction dir);
+    int combine(direction dir);
     void move_(direction dir);
+    int check_lose();
 };
 
 #endif //FIELD_H

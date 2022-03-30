@@ -13,6 +13,7 @@ class Cell {
     char strval[20];
 public:
     Cell(Pair pos_, Pair size_);
+    Cell(const Cell& c);
     void val(int value_); 
     void move_to(Cell &c);
     void combine_with(Cell &c);
