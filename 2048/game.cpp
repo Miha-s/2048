@@ -11,11 +11,12 @@ void init_game_over(Field *field, data_t &dat);
 void game_over(int lose, void *data)
 {
     data_t *dat = (data_t*)data;
+    dat->f->window()->child(0)->deactivate();
     const char *mes;
     if(lose)
-        mes = "You lost. Do you wanna play again?";
+        mes = "You lost. \nDo you wanna play again?";
     else
-        mes = "You have won! Do you wanna play again?";
+        mes = "You won! \nDo you wanna play again?";
     Fl_Widget *mes_box = dat->gr->child(1);
     mes_box->label(mes);
     dat->gr->show();
@@ -31,9 +32,13 @@ void reset_callback(Fl_Widget *w, void *data)
 {
     data_t *dat = (data_t*)data;
     dat->f->reset();
+    dat->f->window()->child(0)->activate();
     dat->gr->hide();
 }
 
+void callback(Fl_Widget*, void *) {
+    std::cout << "HEllo" << std::endl;
+}
 /*
 
 */
@@ -50,7 +55,7 @@ int main()
     data.f = &field;
     
     init_game_over(&field, data);
-    game_over(1, &data);
+    game_over(0, &data);
 
     win->show();
 
@@ -75,29 +80,37 @@ void init_game_over(Field *field, data_t &dat) {
 
     win->begin();
     Fl_Group *gr = new Fl_Group(pos_x, pos_y, box_size_x, box_size_y);
+    gr->begin();
     Fl_Box *box = new Fl_Box(pos_x, pos_y, box_size_x, box_size_y);
     box->box(FL_RFLAT_BOX);
+    box->color(fl_rgb_color(12, 13, 14));
+
 
     pos_x += spac;
     pos_y += spac;
     Fl_Box *mes_box = new Fl_Box(pos_x, pos_y, mes_size_x, mes_size_y);
     //mes_box->label(mes);
     mes_box->labelsize(20);
+    mes_box->labelcolor(fl_rgb_color(88, 240, 237));
+
 
     int but_pos_x = pos_x + (mes_size_x - 2*but_size_x)/3;
     int but_pos_y = pos_y + spac + mes_size_y;
 
     Fl_Button *but_no = new Fl_Button(but_pos_x, but_pos_y, 
                                 but_size_x, but_size_y, "no");
-    //but_no->box(FL_NO_BOX);
+    but_no->box(FL_NO_BOX);
     but_no->labelsize(23);
+    but_no->labelcolor(fl_rgb_color(88, 240, 237));
     but_no->callback(end_callback, &dat);
+    
 
     but_pos_x += but_size_x + (mes_size_x - 2*but_size_x)/3;
     Fl_Button *but_yes = new Fl_Button(but_pos_x, but_pos_y, 
                                 but_size_x, but_size_y, "yes");
-    //but_yes->box(FL_NO_BOX);
+    but_yes->box(FL_NO_BOX);
     but_yes->labelsize(23);
+    but_yes->labelcolor(fl_rgb_color(88, 240, 237));
     but_yes->callback(reset_callback, &dat);
 
     gr->end();

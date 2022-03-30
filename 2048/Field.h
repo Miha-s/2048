@@ -34,10 +34,11 @@ public:
 private:
     void generate_num();
     inline int pos(int i, int j) { return i*size.first + j; }
-    inline void comb(int i, int j, std::shared_ptr<Cell> &tmp);
+    inline int comb(int i, int j, std::shared_ptr<Cell> &tmp);
     inline int move(int i, int j, std::shared_ptr<Cell> &tmp);
-    void combine(direction dir);
+    int combine(direction dir);
     void move_(direction dir);
+    int check_lose();
 };
 
 #endif //FIELD_H

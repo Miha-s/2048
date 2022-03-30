@@ -11,6 +11,8 @@ Cell::Cell(Pair pos_, Pair size_) : value(0),
     init_value();
 }
 
+Cell::Cell(const Cell& c) : value(c.value) {} 
+
 void Cell::val(int value_)
 {
     value = value_;
@@ -19,6 +21,8 @@ void Cell::val(int value_)
 
 void Cell::init_value()
 {
+    if(!box)
+        return ;
     sprintf(strval, "%d", value);
     box->label(strval);
     switch(value) {
