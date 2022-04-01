@@ -1,33 +1,28 @@
 #include "Field.h"
 #include "Window.h"
 #include <FL/Fl_Button.H>
+#include <stdlib.h>
+#include <iostream>
 
 struct data_t {
     Field *f;
     Fl_Group *gr;
 };
 
+// create and hide window to game over menu
 void init_game_over(Field *field, data_t &dat);
-void game_over(int lose, void *data)
-{
-    data_t *dat = (data_t*)data;
-    dat->f->window()->child(0)->deactivate();
-    const char *mes;
-    if(lose)
-        mes = "You lost. \nDo you wanna play again?";
-    else
-        mes = "You won! \nDo you wanna play again?";
-    Fl_Widget *mes_box = dat->gr->child(1);
-    mes_box->label(mes);
-    dat->gr->show();
-}
 
+// game over callback
+void game_over(int lose, void *data);
+
+// close game
 void end_callback(Fl_Widget *w, void *data)
 {
     data_t *dat = (data_t*)data;
     dat->f->window()->hide();
 }
 
+// reset game
 void reset_callback(Fl_Widget *w, void *data)
 {
     data_t *dat = (data_t*)data;
@@ -36,18 +31,20 @@ void reset_callback(Fl_Widget *w, void *data)
     dat->gr->hide();
 }
 
-void callback(Fl_Widget*, void *) {
-    std::cout << "HEllo" << std::endl;
-}
-/*
+void setry_check(int argc, char **argv, int &size_, int &max_val, int &base);
 
-*/
-int main()
+int main(int argc, char **argv)
 {
-    Pair size(4, 4);
+    int size_ = 4;
+    int max_val = 2048;
+    int base = 2;
+
+    setry_check(argc, argv, size_, max_val, base);
+
+    Pair size(size_, size_);
     Pair but_size(100, 100);
     Window *win = new Window("2048");
-    Field field(size, but_size, 10, win);
+    Field field(size, but_size, 10, max_val, base, win);
     data_t data;
     field.callback(game_over, (void*)&data);
     win->field(&field);
@@ -55,16 +52,56 @@ int main()
     data.f = &field;
     
     init_game_over(&field, data);
-    game_over(0, &data);
 
     win->show();
 
     return Fl::run();
 }
 
+
+void setry_check(int argc, char **argv, int &size_, int &max_val, int &base)
+{
+    switch(argc) {
+        case 4:
+            base = strtol(argv[3], 0, 10);
+            if(!base) {
+                std::cerr << "Incorrect base" << std::endl;
+                exit(0);
+            }
+        case 3: 
+        {
+            max_val = strtol(argv[2], 0, 10);
+            if(!max_val) {
+                std::cerr << "Incorrect max value" << std::endl;
+                exit(0);
+            }
+            int tmp = base;
+            bool ok = false;
+            while(tmp <= max_val) {
+                if(tmp == max_val) {
+                    ok = true;
+                    break;
+                }
+                tmp *= 2;
+            }
+            if(!ok) {
+                std::cerr << "Incorrect max value" << std::endl;
+                exit(0);
+            }
+        }
+        case 2:
+            size_ = strtol(argv[1], 0, 10);
+            if(!size_) {
+                std::cerr << "Incorrect field size" << std::endl;
+                exit(0);
+            }
+            break;
+    }
+}
+
+
 void init_game_over(Field *field, data_t &dat) {
     Fl_Window *win = field->window();
-
 
     int mes_size_x = 360;
     int mes_size_y = 40;
@@ -118,4 +155,18 @@ void init_game_over(Field *field, data_t &dat) {
     
     dat.gr = gr;
     gr->hide();
+}
+
+void game_over(int lose, void *data)
+{
+    data_t *dat = (data_t*)data;
+    dat->f->window()->child(0)->deactivate();
+    const char *mes;
+    if(lose)
+        mes = "You lost. \nDo you wanna play again?";
+    else
+        mes = "You won! \nDo you wanna play again?";
+    Fl_Widget *mes_box = dat->gr->child(1);
+    mes_box->label(mes);
+    dat->gr->show();
 }
