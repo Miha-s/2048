@@ -10,35 +10,46 @@
 #include "Cell.h"
 #include "enumeration.h"
 
-// Pair.first  - x
-// Pair.second - y
-
-
+/* 
+   This class is created to manage the whole game:
+   move cells, add cells, check for lose or win
+*/
 
 class Field {
     Pair size;
+    // Pair.first  - x
+    // Pair.second - y
     std::vector<std::shared_ptr<Cell>> cells;
     Fl_Window* win;
+    int max_val;    // the value to win
+    int base;       // value for new generated cell
 
-    typedef void (*gover_t)(int, void*);
+    typedef void (*gover_t)(int, void*);    // game over callback type
     gover_t gover_callback;
-    void* data;
+    void* data;             // data to this callback
 public:
-    Field(Pair s, Pair bs, int spacing, Fl_Window* win_);
-    void step(direction dir);
-    void callback(gover_t go, void* data);
+    Field(Pair s, Pair bs, int spacing, int max_val_, 
+                                int base_, Fl_Window* win_);
+    
+    void step(direction dir);  // make a move
+    void callback(gover_t go, void* data); // set callback
+                                           // 1 - lose
+                                           // 0 - win
     Fl_Window* window() { return win; }
-    void reset();
+    void reset();   // set field to default
     
     ~Field();
 private:
+    // check for end of the game and generate a new number
     void generate_num();
+    int check_lose();
+
     inline int pos(int i, int j) { return i*size.first + j; }
+
+    int combine(direction dir); // add cells
+    void move_(direction dir);  // move cells
     inline int comb(int i, int j, std::shared_ptr<Cell> &tmp);
     inline int move(int i, int j, std::shared_ptr<Cell> &tmp);
-    int combine(direction dir);
-    void move_(direction dir);
-    int check_lose();
 };
 
 #endif //FIELD_H

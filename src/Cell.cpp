@@ -11,6 +11,7 @@ Cell::Cell(Pair pos_, Pair size_) : value(0),
     init_value();
 }
 
+// we transfer only value to another cell
 Cell::Cell(const Cell& c) : value(c.value) {} 
 
 void Cell::val(int value_)
@@ -25,6 +26,7 @@ void Cell::init_value()
         return ;
     sprintf(strval, "%d", value);
     box->label(strval);
+    // setting cell color for different cases
     switch(value) {
     case 0:
         box->color(fl_rgb_color(40, 200, 220));
@@ -76,6 +78,7 @@ void Cell::move_to(Cell &c)
 void Cell::combine_with(Cell &c)
 {
     value += c.value;
+    // set other cell's value to 0
     c.value = 0;
     init_value();
     c.init_value();

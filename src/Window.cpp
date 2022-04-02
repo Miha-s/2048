@@ -16,7 +16,7 @@ int Window::handle(int e) {
         return 1;
         break;
     }
-    return Fl_Group::handle(e);
+    return Fl_Window::handle(e);
 }
             
    

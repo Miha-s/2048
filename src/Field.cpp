@@ -1,8 +1,9 @@
 #include "../2048/Field.h"
 
-Field::Field(Pair s, Pair bs, int spacing, Fl_Window* win_) : size(s)
+Field::Field(Pair s, Pair bs, int spacing, int max_val_, int base_, Fl_Window* win_) : 
+                        size(s), max_val(max_val_), base(base_)
 {
-    
+    // resizing window and creating cells
     win = win_;
     
     int size_x = size.first * bs.first + (size.first + 1) * spacing;
@@ -29,6 +30,7 @@ Field::Field(Pair s, Pair bs, int spacing, Fl_Window* win_) : size(s)
     generate_num();
 }
 
+// additional func to check for lose
 int Field::check_lose()
 {
     std::vector<std::shared_ptr<Cell>> cell_vec;
@@ -56,8 +58,9 @@ int Field::check_lose()
 void Field::generate_num()
 {
     bool lose = true;
+     
     for(int i = 0; i < size.first * size.second; i++) {
-        if(cells[i]->val() == 2048) {
+        if(cells[i]->val() == max_val) {
             gover_callback(0, data);
             return;
         } else if (cells[i]->val() == 0) {
@@ -69,15 +72,18 @@ void Field::generate_num()
             gover_callback(1, data);
         return;
     }
+    
     while(true) {
         int r = rand()%(size.first*size.second);
         if(cells[r]->val() == 0) {
-            cells[r]->val(2);
+            cells[r]->val(base);
             break;
         }
     }
 }
 
+// additional function for combining two cells, 
+// return 1 if cells was added, else return 0
 inline int Field::comb(int i, int j, std::shared_ptr<Cell> &tmp)
 {
     std::shared_ptr<Cell> p = cells[pos(i, j)];
@@ -137,6 +143,9 @@ int Field::combine(direction dir)
     return c;
 }
 
+// additional function to move cell
+// return 1 cell either can't be moved to thins position(tmp)
+// or has been moved 
 int Field::move(int i, int j, std::shared_ptr<Cell> &tmp)
 {
     if(tmp->val())
