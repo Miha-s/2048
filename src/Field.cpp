@@ -144,7 +144,7 @@ int Field::combine(direction dir)
 }
 
 // additional function to move cell
-// return 1 cell either can't be moved to thins position(tmp)
+// return 1 when cell can't be moved to thins position(tmp)
 // or has been moved 
 int Field::move(int i, int j, std::shared_ptr<Cell> &tmp)
 {

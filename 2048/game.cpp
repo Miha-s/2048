@@ -31,7 +31,7 @@ void reset_callback(Fl_Widget *w, void *data)
     dat->gr->hide();
 }
 
-void setry_check(int argc, char **argv, int &size_, int &max_val, int &base);
+void sentry_check(int argc, char **argv, int &size_, int &max_val, int &base);
 
 int main(int argc, char **argv)
 {
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
     int max_val = 2048;
     int base = 2;
 
-    setry_check(argc, argv, size_, max_val, base);
+    sentry_check(argc, argv, size_, max_val, base);
 
     Pair size(size_, size_);
     Pair but_size(100, 100);
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 }
 
 
-void setry_check(int argc, char **argv, int &size_, int &max_val, int &base)
+void sentry_check(int argc, char **argv, int &size_, int &max_val, int &base)
 {
     switch(argc) {
         case 4:
